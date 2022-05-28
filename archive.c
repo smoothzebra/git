@@ -342,7 +342,7 @@ int write_archive_entries(struct archiver_args *args,
 		else
 			err = write_entry(args, &fake_oid, path_in_archive.buf,
 					  path_in_archive.len,
-					  info->stat.st_mode,
+					  canon_mode(info->stat.st_mode),
 					  content.buf, content.len);
 		if (err)
 			break;
@@ -465,7 +465,7 @@ static void parse_treeish_arg(const char **argv,
 	}
 
 	tree = parse_tree_indirect(&oid);
-	if (tree == NULL)
+	if (!tree)
 		die(_("not a tree object: %s"), oid_to_hex(&oid));
 
 	if (prefix) {

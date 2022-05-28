@@ -1664,7 +1664,7 @@ static void check_aliased_update_internal(struct command *cmd,
 	}
 	dst_name = strip_namespace(dst_name);
 
-	if ((item = string_list_lookup(list, dst_name)) == NULL)
+	if (!(item = string_list_lookup(list, dst_name)))
 		return;
 
 	cmd->skip_update = 1;
@@ -2214,8 +2214,7 @@ static const char *unpack(int err_fd, struct shallow_info *si)
 			close(err_fd);
 		return "unable to create temporary object directory";
 	}
-	if (tmp_objdir)
-		strvec_pushv(&child.env_array, tmp_objdir_env(tmp_objdir));
+	strvec_pushv(&child.env_array, tmp_objdir_env(tmp_objdir));
 
 	/*
 	 * Normally we just pass the tmp_objdir environment to the child
@@ -2538,7 +2537,7 @@ int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 			   PACKET_READ_CHOMP_NEWLINE |
 			   PACKET_READ_DIE_ON_ERR_PACKET);
 
-	if ((commands = read_head_info(&reader, &shallow)) != NULL) {
+	if ((commands = read_head_info(&reader, &shallow))) {
 		const char *unpack_status = NULL;
 		struct string_list push_options = STRING_LIST_INIT_DUP;
 
